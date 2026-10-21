@@ -1,4 +1,8 @@
+import { useState } from 'react'
 import './App.css'
+import { Button, CommandInput, Select } from './components/ui'
+import { Hero } from './pages/busqueda/sections/Hero'
+import { BusquedaFiltros } from './pages/busqueda/sections/BusquedaFiltros'
 
 // Un "type" describe la forma de cada objeto. Así TypeScript te avisa
 // si escribes mal una propiedad (ej. personaje.nombe).
@@ -140,86 +144,9 @@ function App() {
     <main className="w-full bg-surface min-h-screen">
       <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-12 py-10 flex flex-col gap-8">
         {/* 1. HERO */}
-        <header className="flex flex-col items-start gap-3 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high text-on-surface">
-            <span className="w-2 h-2 rounded-full bg-secondary-container"></span>
-            <span className="text-code-badge uppercase">Explorador de Personajes</span>
-          </div>
-          <h1 className="text-display text-primary">
-            Descubre el{' '}
-            {/* "isolate" crea una capa propia: sin él, el subrayado con -z-10
-                quedaba DETRÁS del fondo de <main> y no se veía. */}
-            <span className="relative inline-block isolate after:content-[''] after:absolute after:bottom-1 after:left-0 after:w-full after:h-2 after:bg-secondary-fixed/50 after:-z-10">
-              multiverso
-            </span>
-            .
-          </h1>
-          <p className="text-body-lg text-on-surface-variant max-w-2xl">
-            Explora personajes, descubre sus historias y viaja entre dimensiones. Encuentra a tus favoritos entre
-            cientos de habitantes catalogados en el archivo central de Rick and Morty.
-          </p>
-        </header>
-
+        <Hero/>
         {/* 2. BÚSQUEDA Y FILTROS */}
-        <section className="w-full bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col gap-4">
-          <div className="relative w-full flex items-center">
-            <span className="material-symbols-outlined absolute left-4 text-outline text-[22px] pointer-events-none">
-              search
-            </span>
-            {/* aria-label: el input no tiene <label> visible, así que se lo
-                describimos a los lectores de pantalla. */}
-            <input
-              className="w-full h-12 pl-12 pr-12 rounded-lg bg-surface-container-low text-on-surface text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"
-              type="text"
-              placeholder="Ej. Rick, Morty, Summer..."
-              aria-label="Buscar personaje"
-            />
-            <button
-              className="absolute right-3.5 p-1 rounded-md text-outline hover:text-on-surface hover:bg-surface-variant/40 transition-colors"
-              type="button"
-              title="Borrar término de búsqueda"
-            >
-              <span className="material-symbols-outlined text-[18px]">close</span>
-            </button>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative">
-                <select className={claseSelect} aria-label="Filtrar por estado" defaultValue="all">
-                  <option value="all">Estado: Todos</option>
-                  <option value="alive">Vivo</option>
-                  <option value="dead">Muerto</option>
-                  <option value="unknown">Desconocido</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">
-                  expand_more
-                </span>
-              </div>
-              <div className="relative">
-                <select className={claseSelect} aria-label="Filtrar por especie" defaultValue="all">
-                  <option value="all">Especie: Todas</option>
-                  <option value="human">Humano</option>
-                  <option value="alien">Alienígena</option>
-                  <option value="other">Otras formas de vida</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">
-                  expand_more
-                </span>
-              </div>
-              <span className="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed text-code-badge">
-                Filtros: 0/2
-              </span>
-            </div>
-            <button
-              className="h-10 px-4 rounded-lg bg-surface-container-low hover:bg-surface-variant/40 text-on-surface text-label-md inline-flex items-center gap-1.5 transition-colors"
-              type="button"
-            >
-              <span className="material-symbols-outlined text-[18px]">restart_alt</span>
-              Limpiar filtros
-            </button>
-          </div>
-        </section>
+        <BusquedaFiltros/>
 
         {/* 3. ENCABEZADO DE RESULTADOS */}
         <section className="flex flex-wrap items-center justify-between gap-4 pt-2">
