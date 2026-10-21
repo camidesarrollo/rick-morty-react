@@ -25,6 +25,9 @@
 /* Las fuentes externas van ANTES de importar Tailwind (los @import de CSS
    siempre deben ir al principio del archivo). */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+/* Fuente de íconos: sin esto, <span class="material-symbols-outlined">search</span>
+   muestra la palabra "search" en vez de la lupa. */
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
 @import "tailwindcss";
 
 @theme {

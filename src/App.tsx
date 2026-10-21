@@ -1,6 +1,14 @@
 import './App.css'
 
-const listaDatos = [
+// Un "type" describe la forma de cada objeto. Así TypeScript te avisa
+// si escribes mal una propiedad (ej. personaje.nombe).
+type Personaje = {
+  imagen: string
+  nombre: string
+  descripcion: string
+}
+
+const listaDatos: Personaje[] = [
   {
     imagen: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
     nombre: "Rick Sanchez",
@@ -103,140 +111,152 @@ const listaDatos = [
   }
 ]
 
+// Clases repetidas en los <select> de filtros: las guardamos en una constante
+// para no copiar y pegar el mismo texto largo.
+const claseSelect =
+  "appearance-none h-10 pl-3.5 pr-9 rounded-lg bg-surface-container-low text-on-surface text-label-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"
+
+// Componente pequeño y reutilizable: una tarjeta por personaje.
+// Recibe un personaje por "props" y devuelve su JSX.
+function TarjetaPersonaje({ personaje }: { personaje: Personaje }) {
+  return (
+    <article className="flex flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md hover:-translate-y-1 transition-all">
+      <img
+        className="w-full aspect-square object-cover"
+        src={personaje.imagen}
+        alt={personaje.nombre}
+        loading="lazy"
+      />
+      <div className="flex flex-col gap-1 p-4">
+        <h3 className="text-title-md text-primary">{personaje.nombre}</h3>
+        <p className="text-body-sm text-on-surface-variant">{personaje.descripcion}</p>
+      </div>
+    </article>
+  )
+}
+
 function App() {
   return (
-    <>
-      <main className="w-full pt-20 bg-surface min-h-[calc(100vh-80px)]">
-        <div className="flex flex-col w-full">
-          <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-12 py-10 flex flex-col gap-8">
-            {/* <!-- 1. HERO SECTION --> */}
-            <header className="flex flex-col items-start gap-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high text-on-surface">
-                <span className="w-2 h-2 rounded-full bg-secondary-container"></span>
-                <span className="font-code-badge text-code-badge uppercase tracking-wider text-on-surface">Explorador de
-                  Personajes</span>
-              </div>
-              <h1 className="font-display text-display text-primary tracking-tight">
-                Descubre el <span
-                  className="relative inline-block text-primary after:content-[''] after:absolute after:bottom-1 after:left-0 after:w-full after:h-2 after:bg-secondary-fixed/50 after:-z-10">multiverso</span>.
-              </h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
-                Explora personajes, descubre sus historias y viaja entre dimensiones. Encuentra a tus favoritos entre
-                cientos de habitantes catalogados en el archivo central de Rick and Morty.
-              </p>
-            </header>
-            {/* <!-- 2. SEARCH & FILTER PANEL --> */}
-            <section className="w-full bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col gap-4">
-              {/* <!-- Row 1: Search input --> */}
-              <div className="relative w-full flex items-center">
-                <span
-                  className="material-symbols-outlined absolute left-4 text-outline text-[22px] pointer-events-none">search</span>
-                <input
-                  className="w-full h-12 pl-12 pr-12 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder-outline focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"
-                  id="search-input" placeholder="Ej. Rick, Morty, Summer..." type="text" />
-                <button
-                  className="absolute right-3.5 p-1 rounded-md text-outline hover:text-on-surface hover:bg-surface-variant/40 transition-colors"
-                  id="btn-clear-search" title="Borrar término de búsqueda" type="button">
-                  <span className="material-symbols-outlined text-[18px]">close</span>
-                </button>
-              </div>
-              {/* <!-- Row 2: Filter controls inline --> */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                <div className="flex flex-wrap items-center gap-3">
-                  {/* <!-- Status Dropdown --> */}
-                  <div className="relative inline-block text-left">
-                    <select
-                      className="appearance-none h-10 pl-3.5 pr-9 rounded-lg bg-surface-container-low text-on-surface font-label-md text-label-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"
-                      id="filter-status">
-                      <option value="all">Estado: Todos</option>
-                      <option value="alive">Vivo</option>
-                      <option value="dead">Muerto</option>
-                      <option value="unknown">Desconocido</option>
-                    </select>
-                    <span
-                      className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">expand_more</span>
-                  </div>
-                  {/* <!-- Species Dropdown --> */}
-                  <div className="relative inline-block text-left">
-                    <select
-                      className="appearance-none h-10 pl-3.5 pr-9 rounded-lg bg-surface-container-low text-on-surface font-label-md text-label-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"
-                      id="filter-species">
-                      <option value="all">Especie: Todas</option>
-                      <option value="human">Humano</option>
-                      <option value="alien">Alienígena</option>
-                      <option value="other">Otras formas de vida</option>
-                    </select>
-                    <span
-                      className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">expand_more</span>
-                  </div>
-                  {/* <!-- Active filters pill --> */}
-                  <span
-                    className="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-code-badge text-code-badge"
-                    id="active-filters-badge">
-                    Filtros: <span id="active-filter-count">0</span>/2
-                  </span>
-                </div>
-                {/* <!-- Reset Button --> */}
-                <button
-                  className="h-10 px-4 rounded-lg bg-surface-container-low hover:bg-surface-variant/40 text-on-surface font-label-md text-label-md inline-flex items-center gap-1.5 transition-colors"
-                  id="btn-reset-filters" type="button">
-                  <span className="material-symbols-outlined text-[18px]">restart_alt</span>
-                  Limpiar filtros
-                </button>
-              </div>
-            </section>
-            {/* <!-- 3. RESULTS HEADER & AUDIT STATE SWITCHER --> */}
-            <section className="flex flex-wrap items-center justify-between gap-4 pt-2">
-              <div className="flex items-baseline gap-3">
-                <h2 className="font-headline-md text-headline-md text-primary tracking-tight">Personajes</h2>
-                <span className="font-body-sm text-body-sm text-on-surface-variant font-medium" id="results-count">826
-                  habitantes</span>
-              </div>
-              {/* <!-- State Demo Tabs for Reviewer Inspection --> */}
-              <div className="flex items-center gap-1 p-1 bg-surface-container rounded-lg">
-                <button
-                  className="state-tab px-3 py-1.5 rounded-md font-label-sm text-label-sm text-on-primary bg-primary shadow-sm transition-all"
-                  data-state="data" type="button">
-                  Datos (8)
-                </button>
-                <button
-                  className="state-tab px-3 py-1.5 rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all"
-                  data-state="loading" type="button">
-                  Cargando
-                </button>
-                <button
-                  className="state-tab px-3 py-1.5 rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all"
-                  data-state="empty" type="button">
-                  Sin resultados
-                </button>
-                <button
-                  className="state-tab px-3 py-1.5 rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all"
-                  data-state="error" type="button">
-                  Error
-                </button>
-              </div>
-              {/* <!-- Sort dropdown --> */}
-              <div className="relative">
-                <select
-                  className="appearance-none h-9 pl-3 pr-8 rounded-lg bg-surface-container-lowest text-on-surface font-label-sm text-label-sm cursor-pointer shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-fixed">
-                  <option>Orden: Predeterminado</option>
-                  <option>Nombre (A - Z)</option>
-                  <option>Nombre (Z - A)</option>
-                  <option>Estado dimensional</option>
-                </select>
-                <span
-                  className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[16px]">expand_more</span>
-              </div>
-            </section>
-            {/* <!-- 4. ACTIVE STATE CONTAINERS -->
-            <!-- STATE: DATA VIEW (4-COLUMN CARDS GRID) --> */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full" id="view-data">
-
-            </div>
+    <main className="w-full bg-surface min-h-screen">
+      <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-12 py-10 flex flex-col gap-8">
+        {/* 1. HERO */}
+        <header className="flex flex-col items-start gap-3 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high text-on-surface">
+            <span className="w-2 h-2 rounded-full bg-secondary-container"></span>
+            <span className="text-code-badge uppercase">Explorador de Personajes</span>
           </div>
+          <h1 className="text-display text-primary">
+            Descubre el{' '}
+            {/* "isolate" crea una capa propia: sin él, el subrayado con -z-10
+                quedaba DETRÁS del fondo de <main> y no se veía. */}
+            <span className="relative inline-block isolate after:content-[''] after:absolute after:bottom-1 after:left-0 after:w-full after:h-2 after:bg-secondary-fixed/50 after:-z-10">
+              multiverso
+            </span>
+            .
+          </h1>
+          <p className="text-body-lg text-on-surface-variant max-w-2xl">
+            Explora personajes, descubre sus historias y viaja entre dimensiones. Encuentra a tus favoritos entre
+            cientos de habitantes catalogados en el archivo central de Rick and Morty.
+          </p>
+        </header>
+
+        {/* 2. BÚSQUEDA Y FILTROS */}
+        <section className="w-full bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col gap-4">
+          <div className="relative w-full flex items-center">
+            <span className="material-symbols-outlined absolute left-4 text-outline text-[22px] pointer-events-none">
+              search
+            </span>
+            {/* aria-label: el input no tiene <label> visible, así que se lo
+                describimos a los lectores de pantalla. */}
+            <input
+              className="w-full h-12 pl-12 pr-12 rounded-lg bg-surface-container-low text-on-surface text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"
+              type="text"
+              placeholder="Ej. Rick, Morty, Summer..."
+              aria-label="Buscar personaje"
+            />
+            <button
+              className="absolute right-3.5 p-1 rounded-md text-outline hover:text-on-surface hover:bg-surface-variant/40 transition-colors"
+              type="button"
+              title="Borrar término de búsqueda"
+            >
+              <span className="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative">
+                <select className={claseSelect} aria-label="Filtrar por estado" defaultValue="all">
+                  <option value="all">Estado: Todos</option>
+                  <option value="alive">Vivo</option>
+                  <option value="dead">Muerto</option>
+                  <option value="unknown">Desconocido</option>
+                </select>
+                <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">
+                  expand_more
+                </span>
+              </div>
+              <div className="relative">
+                <select className={claseSelect} aria-label="Filtrar por especie" defaultValue="all">
+                  <option value="all">Especie: Todas</option>
+                  <option value="human">Humano</option>
+                  <option value="alien">Alienígena</option>
+                  <option value="other">Otras formas de vida</option>
+                </select>
+                <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">
+                  expand_more
+                </span>
+              </div>
+              <span className="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed text-code-badge">
+                Filtros: 0/2
+              </span>
+            </div>
+            <button
+              className="h-10 px-4 rounded-lg bg-surface-container-low hover:bg-surface-variant/40 text-on-surface text-label-md inline-flex items-center gap-1.5 transition-colors"
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[18px]">restart_alt</span>
+              Limpiar filtros
+            </button>
+          </div>
+        </section>
+
+        {/* 3. ENCABEZADO DE RESULTADOS */}
+        <section className="flex flex-wrap items-center justify-between gap-4 pt-2">
+          <div className="flex items-baseline gap-3">
+            <h2 className="text-headline-md text-primary">Personajes</h2>
+            {/* El número sale de los datos, no escrito a mano */}
+            <span className="text-body-sm text-on-surface-variant font-medium">
+              {listaDatos.length} habitantes
+            </span>
+          </div>
+          <div className="relative">
+            <select
+              className="appearance-none h-9 pl-3 pr-8 rounded-lg bg-surface-container-lowest text-on-surface text-label-sm cursor-pointer shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-fixed"
+              aria-label="Ordenar personajes"
+              defaultValue="default"
+            >
+              <option value="default">Orden: Predeterminado</option>
+              <option value="az">Nombre (A - Z)</option>
+              <option value="za">Nombre (Z - A)</option>
+              <option value="status">Estado dimensional</option>
+            </select>
+            <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[16px]">
+              expand_more
+            </span>
+          </div>
+        </section>
+
+        {/* 4. GRILLA DE TARJETAS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+          {/* .map() recorre el arreglo y crea una tarjeta por personaje.
+              "key" es obligatorio en listas: ayuda a React a saber qué cambió. */}
+          {listaDatos.map((personaje) => (
+            <TarjetaPersonaje key={personaje.nombre} personaje={personaje} />
+          ))}
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   )
 }
 
