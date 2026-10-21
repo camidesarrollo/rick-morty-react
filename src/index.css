@@ -1,0 +1,297 @@
+/* ============================================================================
+   COSMIC INDEX → TAILWIND v4
+   Guía de aprendizaje: cómo pasar DESIGN.md a tokens de Tailwind.
+
+   IDEA CLAVE
+   En Tailwind v4 ya no existe tailwind.config.js. El tema se define en CSS
+   dentro de un bloque @theme, usando variables con un PREFIJO que le dice a
+   Tailwind qué clases generar:
+
+     Prefijo de la variable      Clases que genera            Ejemplo
+     ------------------------    -------------------------    -------------------
+     --color-*                   bg-*, text-*, border-*,      bg-primary
+                                 ring-*, fill-*, ...
+     --font-*                    font-*                       font-sans
+     --text-*                    text-* (tamaño + extras)     text-headline-lg
+     --radius-*                  rounded-*                    rounded-lg
+     --spacing-*                 p-*, m-*, gap-*, w-*, ...    p-space-md
+     --shadow-*                  shadow-*                     shadow-level-1
+     --breakpoint-*              prefijos responsive          desktop:grid-cols-4
+
+   Regla: el nombre después del prefijo = el nombre de la clase.
+     --color-on-surface  →  text-on-surface, bg-on-surface, border-on-surface...
+   ============================================================================ */
+
+/* Las fuentes externas van ANTES de importar Tailwind (los @import de CSS
+   siempre deben ir al principio del archivo). */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* ==========================================================================
+     1. COLORES  (DESIGN.md → "colors:" del YAML)
+     Copia cada clave del YAML anteponiendo --color-.
+     ========================================================================== */
+
+  /* Superficies */
+  --color-surface: #f7f9fc;
+  --color-surface-dim: #d8dadd;
+  --color-surface-bright: #f7f9fc;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f7;
+  --color-surface-container: #eceef1;
+  --color-surface-container-high: #e6e8eb;
+  --color-surface-container-highest: #e0e3e6;
+  --color-surface-variant: #e0e3e6;
+  --color-surface-tint: #555e74;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #45474c;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f4;
+  --color-background: #f7f9fc;
+  --color-on-background: #191c1e;
+
+  /* Bordes */
+  --color-outline: #75777d;
+  --color-outline-variant: #c5c6cd;
+
+  /* Primario */
+  --color-primary: #020b1e;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #182235;
+  --color-on-primary-container: #7f89a1;
+  --color-inverse-primary: #bcc6e0;
+  --color-primary-fixed: #d8e2fc;
+  --color-primary-fixed-dim: #bcc6e0;
+  --color-on-primary-fixed: #111b2e;
+  --color-on-primary-fixed-variant: #3d475c;
+
+  /* Secundario (lima) */
+  --color-secondary: #416900;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #b6f26a;
+  --color-on-secondary-container: #446e00;
+  --color-secondary-fixed: #b8f46c;
+  --color-secondary-fixed-dim: #9dd753;
+  --color-on-secondary-fixed: #102000;
+  --color-on-secondary-fixed-variant: #304f00;
+
+  /* Terciario */
+  --color-tertiary: #020b1b;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #172233;
+  --color-on-tertiary-container: #7e899e;
+  --color-tertiary-fixed: #d8e3fa;
+  --color-tertiary-fixed-dim: #bcc7dd;
+  --color-on-tertiary-fixed: #111c2d;
+  --color-on-tertiary-fixed-variant: #3c475a;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* --------------------------------------------------------------------------
+     OJO: el texto de DESIGN.md (secciones "Colors" y "Components") usa hex que
+     NO están en el YAML. Por ejemplo dice "Primary #182235", pero en el YAML
+     primary es #020b1e (#182235 es primary-container).
+     Para que los componentes coincidan con lo que describe el texto, creamos
+     tokens con nombres "de marca". Así puedes escribir bg-midnight en vez de
+     acordarte de qué token del YAML era.
+     -------------------------------------------------------------------------- */
+  --color-midnight: #182235;       /* Primary "Midnight Space" (botones, títulos) */
+  --color-lime: #b7f36b;           /* Secondary "Toxic Lime" (acentos, focus ring) */
+  --color-hull: #303b4d;           /* Tertiary "Deep Hull Slate" (hover, bordes activos) */
+  --color-canvas: #f5f7fa;         /* Fondo general de la página */
+  --color-hairline: #e0e5ec;       /* Bordes sutiles de cards, inputs, divisores */
+  --color-muted: #475467;          /* Subtítulos, keys de dossier */
+  --color-placeholder: #98a2b3;    /* Placeholder de inputs */
+
+  /* Estados de personaje (badges) */
+  --color-alive-bg: #e5f8d8;
+  --color-alive: #28651d;
+  --color-dead-bg: #fce8e8;
+  --color-dead: #912018;
+  --color-unknown-bg: #eef0f4;
+  --color-unknown: #475467;
+
+  /* ==========================================================================
+     2. TIPOGRAFÍA  (DESIGN.md → "typography:")
+     --font-sans cambia la fuente por defecto de TODO el sitio.
+     ========================================================================== */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Cada estilo tipográfico se vuelve UNA clase: text-<nombre>.
+     Tailwind v4 permite "sub-propiedades" con doble guion:
+       --text-X                     → font-size
+       --text-X--line-height        → line-height
+       --text-X--letter-spacing     → letter-spacing
+       --text-X--font-weight        → font-weight
+     Con eso, class="text-display" aplica las 4 cosas a la vez. */
+
+  --text-display: 40px;
+  --text-display--line-height: 48px;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 700;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--letter-spacing: -0.02em;
+  --text-headline-lg--font-weight: 700;
+
+  --text-headline-lg-mobile: 26px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--letter-spacing: -0.01em;
+  --text-headline-lg-mobile--font-weight: 700;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-md--font-weight: 600;
+
+  --text-headline-sm: 20px;
+  --text-headline-sm--line-height: 28px;
+  --text-headline-sm--font-weight: 600;
+
+  --text-title-lg: 18px;
+  --text-title-lg--line-height: 24px;
+  --text-title-lg--font-weight: 600;
+
+  --text-title-md: 16px;
+  --text-title-md--line-height: 24px;
+  --text-title-md--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 20px;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 16px;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 20px;
+  --text-label-lg--letter-spacing: 0.01em;
+  --text-label-lg--font-weight: 600;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-md--font-weight: 600;
+
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 14px;
+  --text-label-sm--letter-spacing: 0.04em;
+  --text-label-sm--font-weight: 500;
+
+  --text-code-badge: 11px;
+  --text-code-badge--line-height: 14px;
+  --text-code-badge--letter-spacing: 0.05em;
+  --text-code-badge--font-weight: 600;
+
+  /* ==========================================================================
+     3. BORDES REDONDEADOS  (DESIGN.md → "rounded:")
+     --radius (sin sufijo) es el que usa la clase "rounded" a secas.
+     Estos valores SOBREESCRIBEN los de Tailwind (ej: rounded-lg pasa de 8px
+     a 16px), así que las clases del DESIGN.md funcionan tal cual.
+     ========================================================================== */
+  --radius: 0.5rem;       /* rounded      → inputs, botones          (8px)  */
+  --radius-sm: 0.25rem;   /* rounded-sm   → checkboxes               (4px)  */
+  --radius-md: 0.75rem;   /* rounded-md                              (12px) */
+  --radius-lg: 1rem;      /* rounded-lg   → cards, paneles           (16px) */
+  --radius-xl: 1.5rem;    /* rounded-xl   → modales, drawers         (24px) */
+  --radius-badge: 6px;    /* rounded-badge → badges y chips (extra, sale del texto) */
+  /* rounded-full ya existe en Tailwind (9999px), no hace falta definirlo. */
+
+  /* ==========================================================================
+     4. ESPACIADO  (DESIGN.md → "spacing:")
+     --spacing-<nombre> crea clases para padding, margin, gap, width, etc:
+       p-space-md, px-margin, gap-gutter, mt-space-xs ...
+     Las clases numéricas de siempre (p-4, gap-6) SIGUEN funcionando:
+     en v4 cada número = 0.25rem (4px), justo la "rejilla de 4px" del diseño.
+       space-xs = p-1 | space-sm = p-2 | space-md = p-4 | space-lg = p-6 | space-xl = p-8
+     ========================================================================== */
+  --spacing-gutter: 1.5rem;
+  --spacing-gutter-mobile: 1rem;
+  --spacing-margin: 2rem;
+  --spacing-margin-mobile: 1rem;
+  --spacing-margin-tablet: 1.5rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2rem;
+
+  /* ==========================================================================
+     5. ELEVACIÓN / SOMBRAS  (DESIGN.md → "Elevation & Depth")
+     ========================================================================== */
+  --shadow-level-1: 0 2px 8px -2px rgb(24 34 53 / 0.08);   /* hover de cards */
+  --shadow-level-2: 0 4px 16px -4px rgb(24 34 53 / 0.12);  /* paneles activos, sticky */
+  --shadow-level-3: 0 12px 32px -8px rgb(24 34 53 / 0.2);  /* modales */
+  /* El scrim del modal no es un token: se hace con clases
+       bg-midnight/50 backdrop-blur-xs   (xs = 4px de blur) */
+
+  /* ==========================================================================
+     6. BREAKPOINTS  (DESIGN.md → "Grid Framework")
+     Mobile < 768px | Tablet 768–1199px | Desktop 1200px+
+     md: de Tailwind ya es 768px (48rem). Añadimos "desktop:" en 1200px.
+     ========================================================================== */
+  --breakpoint-tablet: 48rem;    /* 768px  → tablet:grid-cols-8   */
+  --breakpoint-desktop: 75rem;   /* 1200px → desktop:grid-cols-12 */
+}
+
+/* ============================================================================
+   ESTILOS BASE
+   @layer base es para estilos de etiquetas HTML (no clases). Aquí ponemos el
+   "Level 0 (Canvas Base)" del diseño. Usamos var() para leer los tokens.
+   ============================================================================ */
+@layer base {
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-midnight);
+    font-family: var(--font-sans);
+  }
+}
+
+/* ============================================================================
+   CHULETA: de DESIGN.md a clases (para cuando hagas tus componentes)
+
+   El DESIGN.md dice...                          Tú escribes...
+   ------------------------------------------    -----------------------------------
+   Background #182235, text #FFFFFF              bg-midnight text-white
+   height 40px, padding 0 1rem                   h-10 px-4
+   hover background #303B4D                      hover:bg-hull
+   2px offset ring en #B7F36B                    focus-visible:ring-2
+                                                 focus-visible:ring-lime
+                                                 focus-visible:ring-offset-2
+   filter: brightness(0.95)                      hover:brightness-95
+   border 1px solid #E0E5EC                      border border-hairline
+   radius 16px                                   rounded-lg
+   translateY(-2px)                              hover:-translate-y-0.5
+   transición suave                              transition
+   Placeholder #98A2B3                           placeholder:text-placeholder
+   focus: borde #182235                          focus:border-midnight
+   label-sm, uppercase                           text-label-sm uppercase
+   título de card (title-lg, #182235)            text-title-lg text-midnight
+   punto de 6px que pulsa                        size-1.5 rounded-full bg-alive
+                                                 animate-pulse
+   checkbox con color de marca                   accent-midnight
+   grid 12 col, gutter 24px, margen 32px         grid grid-cols-12 gap-gutter px-margin
+
+   Tip: con "group" en el padre y "group-hover:" en el hijo puedes cambiar
+   algo del hijo cuando pasas el ratón sobre la card entera.
+
+   EJERCICIOS SUGERIDOS (en orden de dificultad)
+   1. Botón primario, accent y ghost (sección "Buttons").
+   2. Badge de estado Alive / Dead / Unknown con su puntito.
+   3. Chip de taxonomía (Episode / Dimension).
+   4. Input de búsqueda con el ring lima al hacer focus.
+   5. Card de personaje con hover (sube, borde hull, shadow-level-1).
+   6. Grid responsive: 1 col en móvil, 2 en tablet, 3-4 en desktop.
+   7. Modal con scrim borroso y shadow-level-3.
+   ============================================================================ */
