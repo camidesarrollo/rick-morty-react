@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { BusquedaFiltros } from './sections/BusquedaFiltros'
 import { FILTROS_INICIALES, type Filtros } from './sections/BusquedaFiltros.cb'
 import { DetalleResultados } from './sections/DetalleResultados'
+import { ordenarPersonajes, type Orden } from './sections/DetalleResultados.cb'
 import { Hero } from './sections/Hero'
 import { TarjetaPersonaje } from './sections/TarjetaPersonajes'
 import { usePersonajes } from '../../hooks/usePersonajes'
@@ -13,6 +14,7 @@ export function BusquedaPage() {
 
     const [filtros, setFiltros] = useState<Filtros>(FILTROS_INICIALES)
     const [pagina, setPagina] = useState(1)
+    const [orden, setOrden] = useState<Orden>('default')
 
     // Consumimos el Custom Hook
     const {
@@ -21,6 +23,8 @@ export function BusquedaPage() {
         cargando,
         error
     } = usePersonajes(filtros, pagina)
+
+    const personajesOrdenados = ordenarPersonajes(listaDatos, orden)
 
     // Cambiar filtros también reinicia la paginación.
     function cambiarFiltros(nuevosFiltros: Filtros) {
@@ -38,7 +42,11 @@ export function BusquedaPage() {
                 onCambiar={cambiarFiltros}
             />
 
-            <DetalleResultados listaDatos={listaDatos} />
+            <DetalleResultados
+                listaDatos={listaDatos}
+                orden={orden}
+                onCambiarOrden={setOrden}
+            />
 
             {cargando && (
                 <div className="flex justify-center items-center py-10">
@@ -59,7 +67,7 @@ export function BusquedaPage() {
             {!cargando && !error && (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-                        {listaDatos.map((personaje) => (
+                        {personajesOrdenados.map((personaje) => (
                             <TarjetaPersonaje
                                 key={personaje.id}
                                 personaje={personaje}

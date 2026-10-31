@@ -1,16 +1,14 @@
-﻿import { useState } from "react";
-import { Select } from "../../../components/ui";
+﻿import { Select } from "../../../components/ui";
 import type { Result } from "../../../data/RickAndMortyApi";
-
-type Orden = "default" | "az" | "za" | "status";
+import type { Orden } from "./DetalleResultados.cb";
 
 type DetalleResultadosProps = {
   listaDatos: Result[]
+  orden: Orden
+  onCambiarOrden: (orden: Orden) => void
 }
 
-export function DetalleResultados({ listaDatos }: DetalleResultadosProps) {
-
-    const [orden, setOrden] = useState<Orden>("default");
+export function DetalleResultados({ listaDatos, orden, onCambiarOrden }: DetalleResultadosProps) {
     return (
         <>
             <section className="flex flex-wrap items-center justify-between gap-4 pt-2">
@@ -21,11 +19,11 @@ export function DetalleResultados({ listaDatos }: DetalleResultadosProps) {
                         {listaDatos.length} habitantes
                     </span>
                 </div>
-                <div className="relative">  
+                <div className="relative">
                      <Select
                         label="Ordenar personajes"
                         value={orden}
-                        onChange={setOrden}
+                        onChange={onCambiarOrden}
                         options={[
                         { value: "default", label: "Orden: Predeterminado" },
                         { value: "az", label: "Nombre (A - Z)" },
