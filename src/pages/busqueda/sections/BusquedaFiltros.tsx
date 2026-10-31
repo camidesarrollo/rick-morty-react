@@ -1,40 +1,24 @@
-﻿
-import { useState } from "react";
-import { Button, CommandInput, Select, type Status } from "../../../components/ui";
-import type { Species } from "../../../data/RickAndMortyApi";
+﻿import { Button, CommandInput, Select } from "../../../components/ui";
+import { useBusquedaFiltros, type BusquedaFiltrosProps } from "./BusquedaFiltros.cb";
 
-type Estado = "all"  | Status;
-type Especie = "all" | Species;
+// La vista solo dibuja: toda la lógica viene del hook.
+export function BusquedaFiltros(props: BusquedaFiltrosProps) {
+  const { filtros } = props;
+  const {
+    texto,
+    setTexto,
+    buscar,
+    cambiarEstado,
+    cambiarEspecie,
+    filtrosActivos,
+    limpiarFiltros,
+  } = useBusquedaFiltros(props);
 
-export function BusquedaFiltros() {
-  // 1. Estados del componente
-  const [busqueda, setBusqueda] = useState("");
-  const [estado, setEstado] = useState<Estado>("all");
-  const [especie, setEspecie] = useState<Especie>("all");
-
-  // 2. Lógica de búsqueda
-  function buscar(texto: string) {
-    console.log("Buscando:", texto);
-  }
-
-  // 3. Contar los filtros activos
-  const filtrosActivos =
-    Number(estado !== "all") +
-    Number(especie !== "all");
-
-  // 4. Limpiar todos los controles
-  function limpiarFiltros() {
-    setBusqueda("");
-    setEstado("all");
-    setEspecie("all");
-  }
-
-  // 5. Renderizar la interfaz
   return (
     <section className="w-full bg-surface-container-lowest rounded-xl p-5 shadow-sm flex flex-col gap-4">
       <CommandInput
-        value={busqueda}
-        onChange={setBusqueda}
+        value={texto}
+        onChange={setTexto}
         onSubmit={buscar}
         placeholder="Ej. Rick, Morty, Summer..."
       />
@@ -44,8 +28,8 @@ export function BusquedaFiltros() {
           <div className="relative">
             <Select
               label="Filtrar por estado"
-              value={estado}
-              onChange={setEstado}
+              value={filtros.estado}
+              onChange={cambiarEstado}
               options={[
                 { value: "all", label: "Estado: Todos" },
                 { value: "Alive", label: "Vivo" },
@@ -58,8 +42,8 @@ export function BusquedaFiltros() {
           <div className="relative">
             <Select
               label="Filtrar por especie"
-              value={especie}
-              onChange={setEspecie}
+              value={filtros.especie}
+              onChange={cambiarEspecie}
               options={[
                 { value: "all", label: "Especie: Todas" },
                 { value: "Human", label: "Humano" },
@@ -68,17 +52,10 @@ export function BusquedaFiltros() {
             />
           </div>
 
-          <span className="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed text-code-badge">
-            Filtros: {filtrosActivos}/2
-          </span>
+          <span className="px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed text-code-badge">Filtros: {filtrosActivos}/2</span>
         </div>
 
-        <Button
-          variant="ghost"
-          icon="restart_alt"
-          size="sm"
-          onClick={limpiarFiltros}
-        >
+        <Button variant="ghost" icon="restart_alt" size="sm" onClick={limpiarFiltros}>
           Limpiar filtros
         </Button>
       </div>

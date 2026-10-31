@@ -1,6 +1,8 @@
 import type { Status } from '../../data/RickAndMortyApi'
 import { cx } from '../../lib/cx'
 
+export type { Status }
+
 // Punto de estado de un personaje. "alive" pulsa, "dead" es fijo,
 // "unknown" es un anillo vacío (como pide DESIGN.md).
 // Uso:

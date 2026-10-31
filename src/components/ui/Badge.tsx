@@ -4,18 +4,18 @@ import { StatusDot, type Status } from './StatusDot'
 
 // Badge de estado: Vivo / Muerto / Desconocido.
 // Uso:
-//   <Badge status="alive" />                 → "VIVO"
-//   <Badge status="dead">Fallecido</Badge>    → texto personalizado
+//   <Badge status="Alive" />                 → "VIVO"
+//   <Badge status="Dead">Fallecido</Badge>    → texto personalizado
 
 const styles: Record<Status, string> = {
-  alive: 'bg-alive-bg text-alive',
-  dead: 'bg-dead-bg text-dead',
+  Alive: 'bg-alive-bg text-alive',
+  Dead: 'bg-dead-bg text-dead',
   unknown: 'bg-unknown-bg text-unknown',
 }
 
 const labels: Record<Status, string> = {
-  alive: 'Vivo',
-  dead: 'Muerto',
+  Alive: 'Vivo',
+  Dead: 'Muerto',
   unknown: 'Desconocido',
 }
 
